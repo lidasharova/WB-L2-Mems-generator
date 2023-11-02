@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mems generator</title>
+  <link rel="stylesheet" href="./assets/styles/main.css">
+  <link rel="icon" href="./assets/favicon/favicon.png">
+</head>
+
+<body>
+  <header class="header">
+    <h1 class="title">Mems generator</h1>
+  </header>
+  <main class="main">
+    <form method="post" enctype="multipart/form-data">
+      <div class="input-wrapper">
+        <label for="file">Выберите изображение для Вашего мема (формат - png, jpeg)</label>
+        <input type="file" class="image-input" accept="image/png, image/jpeg" multiple />
+      </div>
+    </form>
+
+    <div class="meme-container">
+      <img class="uploaded-image" src="./assets/img/template.png" alt="Uploaded Image">
+      <div class="text-container"></div>
+    </div>
+    <button class="add-text-button">Добавить текст</button>
+    <button class="save-meme-button">Сохранить мем</button>
+  </main>
+  <script type="module" src="/js/main.js"></script>
+</body>
+
+</html>
