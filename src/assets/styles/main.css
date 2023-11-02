@@ -7,13 +7,14 @@ body {
 
 .header {
   width: 100%;
-  height: 10vh;
-  padding: 20px;
+  height: 8vh;
 }
 
 .main {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 .title {
   text-align: center;
@@ -39,6 +40,7 @@ label {
 }
 
 .input-wrapper {
+  height: 40px;
   width: 270px;
   position: relative;
   overflow: hidden;
@@ -51,6 +53,7 @@ label {
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
+  margin-bottom: 20px;
 }
 
 .input-wrapper:hover {
@@ -109,9 +112,14 @@ button:hover {
 }
 
 .meme-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  color: #000;
+  font-size: 16px;
+  background-color: transparent;
+  padding: 5px;
   z-index: 1;
+}
+
+.my-canvas {
+  width: 500px;
+  height: 500px;
 }

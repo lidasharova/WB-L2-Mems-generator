@@ -17,16 +17,17 @@
     <form method="post" enctype="multipart/form-data">
       <div class="input-wrapper">
         <label for="file">Выберите изображение для Вашего мема (формат - png, jpeg)</label>
-        <input type="file" class="image-input" accept="image/png, image/jpeg" multiple />
+        <input type="file" class="image-input" accept="image/*" multiple />
       </div>
     </form>
-
-    <div class="meme-container">
-      <img class="uploaded-image" src="./assets/img/template.png" alt="Uploaded Image">
-      <div class="text-container"></div>
+    <canvas class="my-canvas" style="border: 1px solid #000;"></canvas>
+    <div>
+      <input type="color" class="text-color" value="#000000">
+      <input type="range" class="font-size" min="10" max="50" value="20">
+      <input type="text" class="text-input" placeholder="Введите текст">
+      <button class="add-text add-text-button">Добавить текст</button>
+      <button class="save-text save-meme-button">Сохранить мем</button>
     </div>
-    <button class="add-text-button">Добавить текст</button>
-    <button class="save-meme-button">Сохранить мем</button>
   </main>
   <script type="module" src="/js/main.js"></script>
 </body>
