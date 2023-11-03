@@ -66,6 +66,7 @@ const onMouseDown = (event) => {
 };
 
 const onMouseMove = (e) => {
+  e.preventDefault();
   // расстояние до канваса от окна
   const offsetX = rect.left;
   const offsetY = rect.top;
