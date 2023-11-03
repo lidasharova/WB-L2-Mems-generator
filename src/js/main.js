@@ -9,10 +9,11 @@ const addTextButton = document.querySelector('.add-text-button');
 const saveMemeButton = document.querySelector('.save-meme-button');
 const saveTextButton = document.querySelector('.save-text-button');
 const deleteTextButton = document.querySelector('.delete-text-button');
+const canvasElement = document.querySelector('.my-canvas');
 
 let textComponents = [];
 
-let scale = 1;
+let scale = 1; // масштаб изображения относительно канваса
 let viewportOffsetX = 0;
 let viewportOffsetY = 0;
 
@@ -26,37 +27,28 @@ let originY = 0;
 let imageX = 0;
 let imageY = 0;
 
-//загружаем изображение на канвас
-imageInput.addEventListener('change', function (event) {
-  const file = event.target.files[0];
-  if (file) {
-    img = new Image();
-    img.src = URL.createObjectURL(file);
-    img.onload = function () {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, imageX, imageY);
-      canvasImage = img;
-    };
-  }
-});
+const rect = canvas.getBoundingClientRect();
 
-//загружаем изображение на канвас
+// загружаем изображение на канвас
 const addImg = (event) => {
+  event.preventDefault();
+  canvasElement.style.background = 'none';
   const file = event.target.files[0];
   if (file) {
     img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
+      scale = img.width / rect.width;
       canvas.width = img.width;
       canvas.height = img.height;
-      scale = canvasWidth / img.width;
       ctx.drawImage(img, imageX, imageY);
       canvasImage = img;
       removeDisableBtn();
     };
   }
 };
+
+imageInput.addEventListener('change', addImg);
 
 const onMouseUp = () => {
   drag = false;
@@ -65,34 +57,21 @@ const onMouseUp = () => {
 const onMouseDown = (event) => {
   originX = event.pageX;
   originY = event.pageY;
-
   if (event.touches) {
     let touches = event.touches[0];
     originX = touches.pageX;
     originY = touches.pageY;
   }
-
-  if (textInput.value) {
-    let rect = canvas.getBoundingClientRect();
-    let x = originX - rect.left;
-    let y = originY - rect.top;
-    registerTextComponent(
-      textInput.value,
-      x,
-      y,
-      fontSize.value,
-      textColor.value
-    );
-
-    textInput = null;
-    return;
-  }
   drag = true;
 };
 
 const onMouseMove = (e) => {
-  console.log(img.width);
-  console.log(img.height);
+  // расстояние до канваса от окна
+  const offsetX = rect.left;
+  const offsetY = rect.top;
+  // координаты относительно канваса
+  const mouseX = e.pageX - offsetX;
+  const mouseY = e.pageY - offsetY;
 
   if (drag) {
     let pageX = e.pageX;
@@ -103,35 +82,11 @@ const onMouseMove = (e) => {
       pageX = touches.pageX;
       pageY = touches.pageY;
     }
-
-    let deltaX = pageX - originX;
-    let deltaY = pageY - originY;
-
-    if (Math.abs(viewportOffsetX) < Math.abs(img.width / 2)) {
-      viewportOffsetX += deltaX;
-    } else {
-      if (viewportOffsetX < 0) {
-        viewportOffsetX += 1;
-      } else {
-        viewportOffsetX -= 1;
-      }
-    }
-    if (Math.abs(viewportOffsetY) < Math.abs(img.height / 2)) {
-      viewportOffsetY += deltaY;
-    } else {
-      if (viewportOffsetY < 0) {
-        viewportOffsetY += 1;
-      } else {
-        viewportOffsetY -= 1;
-      }
-    }
-    originX = pageX;
-    originY = pageY;
-    updateCoordinatesText(originX, originY);
+    updateCoordinatesText(mouseX * scale, mouseY * scale);
   }
 };
 
-//отрисовка текстового элемента на канвас
+// отрисовка текстового элемента на канвас
 const renderTextCanvas = () => {
   if (img) {
     ctx.clearRect(0, 0, img.width, img.height);
@@ -139,16 +94,17 @@ const renderTextCanvas = () => {
       ctx.drawImage(canvasImage, 0, 0);
     }
     textComponents.forEach((textObj) => {
-      ctx.font = textObj.fontSize + 'px Arial';
+      ctx.font = textObj.fontSize * scale + 'px Tahoma, Verdana, sans-serif';
       ctx.fillStyle = textObj.color;
-      ctx.fillText(textObj.text, textObj.x, textObj.y, img.width);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(textObj.text, textObj.x, textObj.y);
     });
   } else {
     alert('Вы не загрузили изображение');
   }
 };
 
-//обновление координат для текстового элемента
+// обновление координат для надписи
 const updateCoordinatesText = (x, y) => {
   textComponents.forEach((textObj) => {
     if (!textObj.saved) {
@@ -159,7 +115,7 @@ const updateCoordinatesText = (x, y) => {
   renderTextCanvas();
 };
 
-//регистрация текстового элемента
+// добавление новой надписи
 const registerTextComponent = (text, textX, textY, size, color, saved) => {
   textComponents.push({
     text,
@@ -183,14 +139,23 @@ const removeDisableBtn = () => {
 };
 
 const addText = () => {
-  const text = textInput.value;
-  const color = textColor.value;
-  const size = fontSize.value;
-  const textX = 50;
-  const textY = 50;
-  const saved = false;
-  registerTextComponent(text, textX, textY, size, color, saved);
-  textInput.value = '';
+  if (img) {
+    const text = textInput.value;
+    const color = textColor.value;
+    const size = fontSize.value;
+    const textX = 50;
+    const textY = 50;
+    const saved = false;
+    const hasUnsavedText = textComponents.some((component) => !component.saved);
+    if (hasUnsavedText) {
+      alert('Сохраните откредактированную надпись');
+    } else {
+      registerTextComponent(text, textX, textY, size, color, saved);
+      textInput.value = '';
+    }
+  } else {
+    alert('Вы не загрузили изображение');
+  }
 };
 
 const deleteText = () => {
@@ -209,7 +174,10 @@ const saveText = () => {
           component.saved = true;
         }
       });
+    } else {
+      lastTextComponent.saved = true;
     }
+    renderTextCanvas();
   }
 };
 
@@ -223,12 +191,35 @@ const saveMeme = () => {
   link.click();
 };
 
+// изменения цвета текста
+const changeFontColor = () => {
+  if (textComponents.length > 0) {
+    const color = this.value;
+    textComponents[textComponents.length - 1].color = color;
+    renderTextCanvas();
+  }
+};
+
+// изменения размера шрифта
+const changeFontSize = () => {
+  fontSize = document.querySelector('.font-size');
+  {
+    if (textComponents.length > 0) {
+      const size = this.value;
+      textComponents[textComponents.length - 1].fontSize = size;
+      renderTextCanvas();
+    }
+  }
+};
 canvas.addEventListener('mousemove', onMouseMove);
 canvas.addEventListener('touchmove', onMouseMove);
 canvas.addEventListener('mouseup', onMouseUp);
 canvas.addEventListener('touchend', onMouseUp);
 canvas.addEventListener('touchstart', onMouseDown);
 canvas.addEventListener('mousedown', onMouseDown);
+
+fontSize.addEventListener('input', changeFontSize);
+textColor.addEventListener('input', changeFontColor);
 
 addTextButton.addEventListener('click', addText);
 deleteTextButton.addEventListener('click', deleteText);
