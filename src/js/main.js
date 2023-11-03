@@ -194,7 +194,7 @@ const saveMeme = () => {
 // изменения цвета текста
 const changeFontColor = () => {
   if (textComponents.length > 0) {
-    const color = this.value;
+    const color = textColor.value;
     textComponents[textComponents.length - 1].color = color;
     renderTextCanvas();
   }
@@ -202,10 +202,9 @@ const changeFontColor = () => {
 
 // изменения размера шрифта
 const changeFontSize = () => {
-  fontSize = document.querySelector('.font-size');
   {
     if (textComponents.length > 0) {
-      const size = this.value;
+      const size = fontSize.value;
       textComponents[textComponents.length - 1].fontSize = size;
       renderTextCanvas();
     }
