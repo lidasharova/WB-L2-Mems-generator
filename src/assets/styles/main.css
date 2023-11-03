@@ -94,23 +94,6 @@ button:hover {
   background-color: #45a049;
 }
 
-.save-meme-button {
-  background-color: #008cba;
-}
-
-.save-meme-button:hover {
-  background-color: #0073a3;
-}
-
-.add-text-button,
-.add-img-button {
-  background-color: #ffc107;
-}
-
-.add-text-button:hover {
-  background-color: #e0a800;
-}
-
 .meme-text {
   color: #000;
   font-size: 16px;
@@ -120,7 +103,92 @@ button:hover {
 }
 
 .my-canvas {
-  width: 500px;
-  height: 500px;
+  width: 400px;
   cursor: pointer;
+}
+
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin: 5px;
+}
+
+.add-text-button {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.add-text-button:hover {
+  background-color: #2980b9;
+}
+
+.delete-text-button {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.delete-text-button:hover {
+  background-color: #c0392b;
+}
+
+.save-text-button {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+.save-text-button:hover {
+  background-color: #219e54;
+}
+
+.save-meme-button {
+  background-color: #f39c12;
+  color: #fff;
+}
+
+.save-meme-button:hover {
+  background-color: #d68910;
+}
+
+span {
+  color: rgb(238, 246, 250);
+  display: block;
+  margin-top: 20px;
+}
+
+.text-input {
+  width: 60%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-bottom: 20px;
+}
+
+.text-input::placeholder {
+  color: #ccc;
+}
+
+.text-input:focus {
+  border-color: #3498db;
+}
+
+.text-input:valid {
+  border-color: #27ae60;
+}
+
+.text-input:invalid {
+  border-color: #e74c3c;
+}
+
+@media (max-width: 500px) {
+  .my-canvas {
+    width: 280px;
+  }
 }
