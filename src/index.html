@@ -10,29 +10,51 @@
 </head>
 
 <body>
-  <header class="header">
-    <h1 class="title">Mems generator</h1>
-  </header>
-  <main class="main">
-    <form method="post" enctype="multipart/form-data">
-      <div class="input-wrapper">
-        <label for="file">Выберите изображение для Вашего мема (формат - png, jpeg)</label>
-        <input type="file" class="image-input" accept="image/*" multiple />
+  <div class="container">
+    <header class="header">
+      <h1 class="title">Mems generator</h1>
+    </header>
+    <main class="main">
+      <form method="post" enctype="multipart/form-data">
+        <div class="input-wrapper">
+          <label class="image-label" for="file">Выберите изображение для Вашего мема (формат - png, jpeg)</label>
+          <input type="file" class="image-input" accept="image/*" multiple />
+        </div>
+      </form>
+      <canvas class="my-canvas" style="border: 1px solid #f9f9f9"></canvas>
+      <div class="text-wrapper">
+        <input type="text" class="text-input" placeholder="Введите текст">
+        <button class="add-text add-text-button" disabled>Добавить надпись</button>
+        <div class="text-properties-wrapper">
+          <div class="text-properties">
+            <span>Цвет:</span>
+            <input type="color" class="text-color" value="#9feaea">
+            <span>Размер шрифта:</span>
+            <input type="range" class="font-size" min="10" max="80" value="20">
+          </div>
+
+          <div class="text-properties">
+            <label for="fontSelect">Выберите шрифт:</label>
+            <select id="fontSelect">
+              <option value="Tahoma">Tahoma</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Geneva">Geneva</option>
+            </select>
+
+            <label for="fontWeightSelect">Выберите начертание текста:</label>
+            <select id="fontWeightSelect">
+              <option value="normal">Нормальный</option>
+              <option value="italic">Курсив</option>
+              <option value="bold">Жирный</option>
+            </select>
+          </div>
+        </div>
+        <button class="delete-text delete-text-button" disabled>Удалить надпись</button>
+        <button class="save-text save-text-button" disabled>Сохранить надпись</button>
+        <button class="save-text save-meme-button" disabled>Сохранить мем</button>
       </div>
-    </form>
-    <canvas class="my-canvas" style="border: 1px solid #f9f9f9"></canvas>
-    <div>
-      <span>Цвет</span>
-      <input type="color" class="text-color" value="#9feaea">
-      <span>Размер шрифта</span>
-      <input type="range" class="font-size" min="10" max="80" value="20">
-      <input type="text" class="text-input" placeholder="Введите текст">
-      <button class="add-text add-text-button">Добавить надпись</button>
-      <button class="delete-text delete-text-button">Удалить надпись</button>
-      <button class="save-text save-text-button">Сохранить надпись</button>
-      <button class="save-text save-meme-button">Сохранить мем</button>
-    </div>
-  </main>
+    </main>
+  </div>
   <script type="module" src="/js/main.js"></script>
 </body>
 

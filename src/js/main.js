@@ -2,14 +2,16 @@ const canvas = document.querySelector('.my-canvas');
 const ctx = canvas.getContext('2d');
 
 const imageInput = document.querySelector('.image-input');
-const textColor = document.querySelector('.text-color');
-const fontSize = document.querySelector('.font-size');
 const textInput = document.querySelector('.text-input');
 const addTextButton = document.querySelector('.add-text-button');
 const saveMemeButton = document.querySelector('.save-meme-button');
 const saveTextButton = document.querySelector('.save-text-button');
 const deleteTextButton = document.querySelector('.delete-text-button');
 const canvasElement = document.querySelector('.my-canvas');
+const textColor = document.querySelector('.text-color');
+const fontSize = document.querySelector('.font-size');
+const fontSelect = document.getElementById('fontSelect');
+const fontWeightSelect = document.getElementById('fontWeightSelect');
 
 let textComponents = [];
 
@@ -95,7 +97,7 @@ const renderTextCanvas = () => {
       ctx.drawImage(canvasImage, 0, 0);
     }
     textComponents.forEach((textObj) => {
-      ctx.font = textObj.fontSize * scale + 'px Tahoma, Verdana, sans-serif';
+      ctx.font = `${textObj.weight} ${textObj.size * scale}px ${textObj.font}`;
       ctx.fillStyle = textObj.color;
       ctx.textBaseline = 'middle';
       ctx.fillText(textObj.text, textObj.x, textObj.y);
@@ -117,15 +119,26 @@ const updateCoordinatesText = (x, y) => {
 };
 
 // добавление новой надписи
-const registerTextComponent = (text, textX, textY, size, color, saved) => {
+const registerTextComponent = (
+  text,
+  textX,
+  textY,
+  size,
+  color,
+  weight,
+  font,
+  saved
+) => {
   textComponents.push({
     text,
     x: textX,
     y: textY,
     saved: false,
-    fontSize: size,
+    size,
     color,
-    saved: saved,
+    weight,
+    font,
+    saved,
   });
   renderTextCanvas();
 };
@@ -133,9 +146,17 @@ const registerTextComponent = (text, textX, textY, size, color, saved) => {
 const removeDisableBtn = () => {
   if (img) {
     addTextButton.removeAttribute('disabled');
+    saveMemeButton.removeAttribute('disabled');
+  }
+};
+
+const toggleDisableBtn = () => {
+  if (textComponents.length > 0) {
     deleteTextButton.removeAttribute('disabled');
     saveTextButton.removeAttribute('disabled');
-    saveMemeButton.removeAttribute('disabled');
+  } else {
+    deleteTextButton.setAttribute('disabled', true);
+    saveTextButton.setAttribute('disabled', true);
   }
 };
 
@@ -144,15 +165,27 @@ const addText = () => {
     const text = textInput.value;
     const color = textColor.value;
     const size = fontSize.value;
-    const textX = 50;
-    const textY = 50;
+    const weight = fontWeightSelect.value;
+    const font = fontSelect.value;
+    const textX = 30;
+    const textY = 30;
     const saved = false;
     const hasUnsavedText = textComponents.some((component) => !component.saved);
     if (hasUnsavedText) {
       alert('Сохраните откредактированную надпись');
     } else {
-      registerTextComponent(text, textX, textY, size, color, saved);
+      registerTextComponent(
+        text,
+        textX,
+        textY,
+        size,
+        color,
+        weight,
+        font,
+        saved
+      );
       textInput.value = '';
+      toggleDisableBtn();
     }
   } else {
     alert('Вы не загрузили изображение');
@@ -162,6 +195,7 @@ const addText = () => {
 const deleteText = () => {
   if (textComponents.length > 0) {
     textComponents.pop();
+    toggleDisableBtn();
     renderTextCanvas();
   }
 };
@@ -182,7 +216,7 @@ const saveText = () => {
   }
 };
 
-//сохранение мема как картинки
+// сохранение мема как картинки
 const saveMeme = () => {
   img = new Image();
   img.src = canvas.toDataURL('image/png');
@@ -192,25 +226,14 @@ const saveMeme = () => {
   link.click();
 };
 
-// изменения цвета текста
-const changeFontColor = () => {
+// функция для изменения свойств текста
+const changeTextProperty = (property, value) => {
   if (textComponents.length > 0) {
-    const color = textColor.value;
-    textComponents[textComponents.length - 1].color = color;
+    textComponents[textComponents.length - 1][property] = value;
     renderTextCanvas();
   }
 };
 
-// изменения размера шрифта
-const changeFontSize = () => {
-  {
-    if (textComponents.length > 0) {
-      const size = fontSize.value;
-      textComponents[textComponents.length - 1].fontSize = size;
-      renderTextCanvas();
-    }
-  }
-};
 canvas.addEventListener('mousemove', onMouseMove);
 canvas.addEventListener('touchmove', onMouseMove);
 canvas.addEventListener('mouseup', onMouseUp);
@@ -218,10 +241,27 @@ canvas.addEventListener('touchend', onMouseUp);
 canvas.addEventListener('touchstart', onMouseDown);
 canvas.addEventListener('mousedown', onMouseDown);
 
-fontSize.addEventListener('input', changeFontSize);
-textColor.addEventListener('input', changeFontColor);
-
 addTextButton.addEventListener('click', addText);
 deleteTextButton.addEventListener('click', deleteText);
 saveTextButton.addEventListener('click', saveText);
 saveMemeButton.addEventListener('click', saveMeme);
+
+textInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    addText();
+  }
+});
+
+fontSize.addEventListener('input', () =>
+  changeTextProperty('size', fontSize.value)
+);
+textColor.addEventListener('input', () =>
+  changeTextProperty('color', textColor.value)
+);
+fontSelect.addEventListener('change', () =>
+  changeTextProperty('font', fontSelect.value)
+);
+fontWeightSelect.addEventListener('change', () =>
+  changeTextProperty('weight', fontWeightSelect.value)
+);
